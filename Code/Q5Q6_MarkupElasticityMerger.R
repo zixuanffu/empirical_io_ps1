@@ -50,6 +50,10 @@ price <- function(data) {
     return(p_new)
 }
 
-# change in consumer surplus
+# consumer surplus in monetary terms
+# pre-merger
+inclu_util <- -log(s0)
+cs <- num_population * inclu_util / (-alpha)
+# post-merger
 inclu_util <- -log(1 - sum(sj))
 cs <- num_population * inclu_util / (-alpha)
