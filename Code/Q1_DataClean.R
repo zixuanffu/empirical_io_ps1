@@ -11,8 +11,9 @@ gas <- fread("Data/gasprice.csv")
 car_gas <- merge(car, gas, by = "year") # mpg is miles per gallon
 cpi <- fread("Data/USCPI.csv")
 car_gas <- merge(car_gas, cpi, by = "year")
-car_gas[, gasprice_adj := gasprice * 100 / cpi]
-car_gas[, dpm := gasprice_adj / mpg]
-
+car_gas[, p := p * 100 / cpi]
+car_gas[, gasprice := gasprice * 100 / cpi]
+car_gas[, dpm := gasprice / mpg]
+car_gas[, p := p / 1000]
 # save
 saveRDS(car_gas, "Data/carpanel.rds")
