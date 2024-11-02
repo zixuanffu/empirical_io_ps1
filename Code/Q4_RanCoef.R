@@ -7,29 +7,32 @@ var_exo <- c("dpm", "door3", "door4", "door5", "at", "ps", "air", "drv", "wt", "
 var_end <- c("p")
 
 
-# instr class 1: the number of products within 1 sd of size
-size_sd <- sd(dt$size)
-for (i in unique(dt$year)) {
-    size <- dt[year == i, size]
-    diff <- abs(outer(size, size, "-"))
-    diff <- abs(diff) < 0.5 * size_sd
-    iv <- colSums(diff)
-    dt[year == i, num_products_close_size := iv]
-}
+# instr class 1: local differentiation
 
-# instr class 2: the sum of characteristic of other products that are close in size, equally spaced in 4 groups
-for (i in unique(dt$year)) {
-    size <- dt[year == i, size]
-    diff <- abs(outer(size, size, "-"))
-    diff_range <- range(diff)
-    diff <- (diff <= quantile(diff_range, 1 / 4)) #  within one fifth of the range
-    for (x in var_exo) {
-        dt[year == i, paste0(x, "_close_size") := diff %*% as.matrix(dt[year == i, get(x)])]
+char_lst <- c("const", "disp", "size", var_exo)
+for (x in char_lst) {
+    sd_x <- sd(dt[, get(x)])
+    for (i in unique(dt$year)) {
+        diff_x <- abs(outer(dt[year == i, get(x)], dt[year == i, get(x)], "-"))
+        diff_x <- abs(diff_x) < 0.5 * sd_x
+        iv_x <- colSums(diff_x)
+        dt[year == i, paste0(x, "_local") := iv_x - 1] # exclude the own product
     }
 }
+
+# instr class 2: quadratic differentiation
+for (x in char_lst) {
+    for (i in unique(dt$year)) {
+        diff_x <- outer(dt[year == i, get(x)], dt[year == i, get(x)], "-")
+        diff_x <- diff_x^2
+        iv_x <- colSums(diff_x)
+        dt[year == i, paste0(x, "_quad") := iv_x]
+    }
+}
+
 saveRDS(dt, "Data/carpanel_q4.rds")
 
-IV_lst <- c(paste(var_exo, "close_size", sep = "_"), "num_products_close_size")
+IV_lst <- c(paste(char_lst, "_local", sep = ""), paste(char_lst, "_quad", sep = ""))
 saveRDS(IV_lst, "Data/iv_q4.rds")
 
 
@@ -63,15 +66,24 @@ blp_contraction <- function(sj, mu, delta_init) {
 # load the data
 dt <- readRDS("Data/carpanel_q4.rds")
 
-# draw 200 normal random draws to approximate the integral
+# draw 500 normal random draws to approximate the integral
 n <- 500
 # draw in the normal(0, 1)
 draw <- rnorm(n)
 # check the variables
 var_x <- c(var_exo, var_end)
-var_iv_blp <- c("dpm_rival", "hp2wt_rival", "air_rival", "air_ownothers")
-var_iv_nl <- c("dpm_rival", "hp2wt_rival", "air_rival", "air_ownothers", "num_products_rival_g", "hp2wt_rival_g", "dpm_rival_g", "air_rival_g")
-var_iv_local <- c("num_products_close_size", "dpm_rival", "hp2wt_rival", "air_rival", "air_ownothers", "hp2wt_close_size", "dpm_close_size", "air_close_size")
+var_iv_blp <- c("const_rival", "const_ownothers", "dpm_rival", "dpm_ownothers", "hp2wt_rival", "hp2wt_ownothers", "size_rival", "size_ownothers", "air_rival", "air_ownothers")
+var_iv_nl <- c("const_rival", "const_ownothers", "dpm_rival", "dpm_ownothers", "hp2wt_rival", "hp2wt_ownothers", "air_rival", "air_ownothers", "const_rival_g", "hp2wt_rival_g", "dpm_rival_g", "air_rival_g")
+
+# examine the variance of the characteristics over the year
+market_var <- data.table("modelid" = unique(dt$modelid))
+for (x in c("disp", "size", var_exo)) {
+    for (y in unique(dt$modelid)) {
+        market_var[modelid == y, paste0(x, "_sd") := sd(dt[modelid == y, get(x)])]
+    }
+}
+
+var_iv_local <- c(var_iv_nl, "size_local", "disp_local", "wb_local", "hp_local", "hp2wt_local")
 
 # gmm estimation (simultaneously)
 
@@ -149,12 +161,22 @@ for (i in sigma_list) {
 pdf("Results/Figures/gmm_obj_iv_nl.pdf")
 plot(sigma_list, g_list, type = "l", xlab = "sigma", ylab = "gmm objective function")
 dev.off()
+# blp iv
+g_list <- c()
+for (i in sigma_list) {
+    g_list <- c(g_list, blp_moment_condition_2(i, dt, var_iv_blp))
+}
+pdf("Results/Figures/gmm_obj_iv_blp.pdf")
+plot(sigma_list, g_list, type = "l", xlab = "sigma", ylab = "gmm objective function")
+dev.off()
+
 
 
 # to store intermediate results
 blp_intermediate <- function(theta, data, var_iv_new) {
     delta_new <- c()
     sigma <- theta
+    mu_new <- c()
     # flag_cv_new <- c()
     # iter_new <- c()
     for (i in unique(data$year)) {
@@ -165,21 +187,28 @@ blp_intermediate <- function(theta, data, var_iv_new) {
         contraction_result <- blp_contraction(sj, mu, delta_init)
         delta_market <- contraction_result[[1]]
         delta_new <- c(delta_new, delta_market)
+        mu_new <- rbind(mu_new, mu)
         # flag_cv_new <- c(flag_cv_new, contraction_result[[2]])
         # iter_new <- c(iter_new, contraction_result[[3]])
     }
     data$y <- delta_new
     iv_formula <- as.formula(paste("y ~ ", paste(var_exo, collapse = " + "), "|", paste(var_end, collapse = " + "), "~", paste(var_iv_new, collapse = " + ")))
     reg_iv <- feols(iv_formula, data = data, cluster = "modelid")
-    return(list(delta_new, reg_iv))
+    return(list(delta_new, reg_iv, mu_new))
 }
 
 # gmm estimation
-sigma <- optim(2, blp_moment_condition_2, data = dt, var_iv_new = var_iv_nl, method = "BFGS")$par
+sigma_opt <- optim(2, blp_moment_condition_2, data = dt, var_iv_new = var_iv_local, method = "BFGS")
+sigma <- sigma_opt$par
 blp_result <- blp_intermediate(sigma, dt, var_iv_nl)
 ivreg <- blp_result[[2]]
+etable(ivreg,
+    cluster = "modelid", fitstat = ~ n + ar2 + ivf1 + ivf1.p + sargan + sargan.p,
+    file = "Results/Tables/rand_coef.tex", tex = TRUE, replace = TRUE
+)
 summary(ivreg, cluster = "modelid")
-fitstat(ivreg, ~ n + ar2 + ivwald1 + ivwald1.p + sargan + sargan.p)
+fitstat(ivreg, ~ n + ar2 + ivf1 + ivf1.p + sargan + sargan.p)
 beta <- ivreg$coefficients
 delta <- blp_result[[1]]
-save(dt, delta, sigma, ivreg, beta, file = "Data/blp_results.rda")
+mu <- blp_result[[3]]
+save(dt, delta, sigma, ivreg, beta, mu, file = "Data/blp_results.rda")

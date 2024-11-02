@@ -4,11 +4,12 @@ load("Data/blp_results.rda")
 
 summary(ivreg, cluster = "modelid")
 alpha <- ivreg$coefficients["fit_p"]
-alpha <- -0.3 # this should be the right value but how???
+# well, a bit too small
 mu <- sigma * outer(dt[, size], draw)
 sj <- share(delta, mu)
 sj_true <- dt$mktshr
-# calculate the marginal cost
+
+# solve by optim
 marginal_cost_1 <- function(c, data) {
     p <- data$p
     sj <- data$mktshr
@@ -29,60 +30,59 @@ marginal_cost_1(mc$par, data = dt[year == 1977])
 
 # solve directly
 marginal_cost_2 <- function(data) {
-    p <- data$p
-    sj <- data$mktshr
-    brand <- model.matrix(~ data$firmids - 1)
-    ownership <- brand %*% t(brand)
-    omega <- (alpha) * (diag(sj) - sj %*% t(sj)) * ownership
-    omega_inv <- solve(omega)
-    mc <- p + omega_inv %*% sj
-    return(mc)
+    year <- unique(data$year)
+    for (i in year) {
+        p <- data[year == i]$p
+        sj <- data[year == i]$mktshr
+        brand <- model.matrix(~ data[year == i]$firmids - 1)
+        ownership <- brand %*% t(brand)
+        omega <- (alpha) * (diag(sj) - sj %*% t(sj)) * ownership
+        omega_inv <- solve(omega)
+        data[year == i, `:=`(mc = p + omega_inv %*% sj, mk = -omega_inv %*% sj, elas = omega_inv %*% sj * p)]
+    }
+    return(data)
 }
-mc <- marginal_cost_2(data = dt[year == 1977])
-
-# markup
-markup <- function(data) {
-    p <- data$p
-    sj <- data$mktshr
-    brand <- model.matrix(~ data$firmids - 1)
-    ownership <- brand %*% t(brand)
-    omega <- (alpha) * (diag(sj) - sj %*% t(sj)) * ownership
-    omega_inv <- solve(omega)
-    mk <- -omega_inv %*% sj
-    return(mk)
-}
-mk <- markup(data = dt[year == 1977])
-
-elasticity <- function(data) {
-    p <- data$p
-    sj <- data$mktshr
-    omega <- (alpha) * (diag(sj) - sj %*% t(sj))
-    omega_inv <- solve(omega)
-    elas <- omega_inv %*% sj * p
-    return(elas)
-}
-
-elas <- elasticity(data = dt[year == 1977])
-
+dt_postmerger <- marginal_cost_2(data = dt)
 # merger simulation
-dt_merger <- copy(dt)
-dt_merger$c <- mc
-dt_merger[firmids == 17, firmids := 7]
+dt_premerger[firmids == 17, firmids := 7]
 price <- function(data) {
-    c <- data$c
-    sj <- data$mktshr
-    brand <- model.matrix(~ data$firmids - 1)
-    ownership <- brand %*% t(brand)
-    omega <- (alpha) * (diag(sj) - sj %*% t(sj)) * ownership
-    p_new <- c - solve(omega) %*% sj
-    return(p_new)
+    year <- unique(data$year)
+    for (i in year) {
+        c <- data[year == i]$mc
+        sj <- data[year == i]$mktshr
+        brand <- model.matrix(~ data[year == i]$firmids - 1)
+        ownership <- brand %*% t(brand)
+        omega <- (alpha) * (diag(sj) - sj %*% t(sj)) * ownership
+        omega_inv <- solve(omega)
+        data[year == i, `:=`(p_new = c - omega_inv %*% sj)]
+    }
+    return(data)
 }
+dt_postmerger <- price(data = dt_postmerger)
+View(dt_postmerger[, .(p, p_new)])
+
+dt_post <- dt_postmerger[, lapply(.SD, mean), by = .(year), .SDcols = c("p", "mc", "mk", "elas", "p_new")]
+
+library(xtable)
+print(xtable(dt_post, label = "tab:post_merger_mean"), type = "latex", file = "Results/Tables/post_merger_mean.tex")
 
 # consumer surplus in monetary terms
+var_x <- c("const", var_end, var_exo)
+dt_postmerger[, mktshr_new := share(as.vector(delta_new), as.matrix(mu))]
+dt_postmerger[, shr_0_new := 1 - sum(mktshr_new), by = year]
 
-# # pre-merger
-# inclu_util <- -log(s0)
-# cs <- num_population * inclu_util / (-alpha)
-# # post-merger
-# inclu_util <- -log(1 - sum(sj))
-# cs <- num_population * inclu_util / (-alpha)
+# pre-merger
+dt_cs <- unique(dt_postmerger[, .(year, nb_hh, shr_0, shr_0_new)])
+inclu_util <- -log(dt_cs$shr_0)
+nb_hh <- dt_cs$nb_hh
+cs <- nb_hh * inclu_util / (-alpha)
+# post-merger
+inclu_util_new <- -log(dt_cs_new$shr_0_new)
+nb_hh <- dt_cs$nb_hh
+cs_new <- nb_hh * inclu_util_new / (-alpha)
+
+dt_cs[, cs_pre := cs]
+dt_cs[, cs_post := cs_new]
+dt_cs[, diff := cs_new - cs]
+
+print(xtable(dt_cs, label = "tab:post_merger_cs"), type = "latex", file = "Results/Tables/post_merger_cs.tex")
