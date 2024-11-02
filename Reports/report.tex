@@ -1,5 +1,6 @@
 \documentclass[12pt]{article}[margin=1in]
 \usepackage{fullpage,graphicx,psfrag,amsmath,amsfonts,verbatim}
+\usepackage{multicol,multirow}
 \usepackage[small,bf]{caption}
 \usepackage{amsthm}
 \usepackage{hyperref}
@@ -160,6 +161,8 @@ over-identification. The null hypothesis is that all instruments are valid,
 which is rejected by the test, implying that some instruments are not suitable.
 
 %Anoosheh:
+\input{../Results/Tables/nested_logit_anoosheh.tex}
+According to the results here \ref{nl}, we seem to draw different conclusions.
 From the results of the test of overidentifying restrictions, we are able to
 reject the null that \textit{all} instruments are valid. Our instruments also
 appear to be weak as indicated by the conditional likelihood ratio (CLR) test
@@ -244,7 +247,7 @@ We plot the GMM objective function w.r.t. $\sigma$ in Figure
     \label{fig:iv_local_diff}
 \end{figure}
 
-The sigma that minimizes the GMM objective function is 1.35. Given the
+The sigma that minimizes the GMM objective function is 1.11. Given the
 $\hat{\sigma}$, we recover the mean utility $\delta_j$ for each product in
 every market. The estimation results by regressing $\delta_j$ on $X_j$ and
 $p_j$ are shown in Table \ref{tab:reg_rand_coef}.
@@ -280,7 +283,7 @@ For example, if firm $f$ has two products, the matrix is $$
     \end{bmatrix}$$
 Therefore, aggregate the pricing equation for all firms, we have $$ S + \Omega
     \odot O (P-C) = 0 $$ where $O$ is the ownership matrix.
-We take $\hat{\alpha} = -0.098$. We estimate marginal cost (negative), markup,
+We take $\hat{\alpha} = -0.073$. We estimate marginal cost (negative), markup,
 and elasticity for each year. We simulate a merger between firm 17 and firm 7
 by modifying the ownership matrix. The mean results are shown in Table
 \ref{tab:post_merger_mean}.
