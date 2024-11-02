@@ -52,7 +52,7 @@ blp_contraction <- function(sj, mu, delta_init) {
     delta_before <- rep(0, J)
     delta_next <- delta_init
     iter <- 0
-    while (max(abs(delta_next - delta_before)) > 1e-7 && iter < 500) {
+    while (max(abs(delta_next - delta_before)) > 1e-12 && iter < 500) {
         delta_before <- delta_next
         iter <- iter + 1
         delta_next <- delta_before + log(sj) - log(share(delta_before, mu))
@@ -211,4 +211,4 @@ fitstat(ivreg, ~ n + ar2 + ivf1 + ivf1.p + sargan + sargan.p)
 beta <- ivreg$coefficients
 delta <- blp_result[[1]]
 mu <- blp_result[[3]]
-save(dt, delta, sigma, ivreg, beta, mu, file = "Data/blp_results.rda")
+save(dt, delta, sigma, ivreg, beta, mu, var_exo, var_end, file = "Data/blp_results.rda")

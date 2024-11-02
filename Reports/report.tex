@@ -16,7 +16,10 @@
 \bibliographystyle{apalike}
 % \setlength{\parindent}{0pt} % remove the automatic indentation
 
-\title{Empirical IO PS1}
+\title{\textbf{Demand for Differentiated Products} \\
+\vspace{.3cm}
+\large Problem Set 1, \\
+Empirical Industrial Organization}
 \author{Zixuan, Anoosheh, Shuo}
 \date{\today}
 
@@ -38,7 +41,7 @@ We rescale the price by $p/1000$ to make the coefficient on price more readable.
 An overview of the mean and standard deviation of the variables is shown in Table \ref{tab:desc}.
 \input{../Results/Tables/descriptive.tex}
 
-\section{Question 1:Logit}
+\section{Question 1: Logit}
 \subsection{Utility function}
 The standard utility function takes the following linear in characteristics
 form:
@@ -64,13 +67,14 @@ uncorrelated with $p$. We perform two ols estimation based on equation
 \ref{eq:logit} with and without brand fixed effect. The results are shown in
 Table \ref{tab:reg_logit}. However, it is generally not the case. Price is
 generally correlated with unobserved characteristics. We construct instruments
-based on \citep{blp1995}. That is, for each product characteristics $x^k$, we
-compute
+based on \citet{berrylevinsohnpakes1995}. That is, for each product
+characteristics $x^k$, we compute
 \begin{itemize}
     \item $z^k_{j}=\sum_{k\in \mathcal{F}_j, j'\neq j}x^k_{j'}$, the sum of characteristics of all other products belong to the same firm.
     \item $z^k_{j}=\sum_{k\notin \mathcal{F}_j}x^k_{j'}$, the sum of characteristics of all other products belong to the rival firms.
 \end{itemize}
-Since we have many $x^k$, we have a large number of instruments. Following \citep{blp1995}, we selected the following to instrument price $p$:\\
+This is a measure of the competitive environment surrounding firms, capturing the substitutability of other available cars to any particular model.\\
+Since we have many $x^k$, we have a large number of instruments. Following \citep{berrylevinsohnpakes1995}, we selected the following to instrument price $p$:\\
 \verb|const_*, dpm_*, hp2wt_*,size_*, air_*|
 The iv estimation results are shown in Table \ref{tab:reg_logit}.
 \subsection{Results}
@@ -80,6 +84,7 @@ The iv estimation results are shown in Table \ref{tab:reg_logit}.
     \caption{Logit estimation results}
     \label{tab:reg_logit}
 \end{table}
+We observe that the coefficient on price, $\alpha$, is larger (in absolute terms) but noisily estimated using IV than when we make use of OLS. This makes sense as, from the simple OLS regression, we obtain estimates which are downward biased (in terms of magnitude) because our failure to account for endogeneiety yields an underestimate the effect of price on market share.
 
 \section{Question 2:Nested logit}
 \subsection{Utility function}
@@ -89,19 +94,21 @@ Instead, we group the products into nests based on their size. The 3 nests are
 function is given by
 \begin{equation}
     \begin{split}
-        u_{ij}&=X_{j}\beta + \alpha p_{j} + \xi_{j}+ \eta_{ig}+ \epsilon_{ij}\\
-        &=\delta_j+\eta_{ig}+(1-\sigma)\epsilon_{ij}
+        u_{ij} & =X_{j}\beta + \alpha p_{j} + \xi_{j}+ \eta_{ig}+ \epsilon_{ij} \\
+               & =\delta_j+\eta_{ig}+(1-\sigma)\epsilon_{ij}
     \end{split}
 \end{equation}
-Now the estimation equation is
+Following the derivation in \citet{berry1994estimating}, the estimation equation is
 \begin{equation}
     \log(s_j)-\log(s_0)=x_j\beta+p_j\alpha+\sigma\log(\bar{s}_{j|g})+\xi_j
 \end{equation}
 \subsection{Estimation}
 In addition to $p$ now $\log(\bar{s}_{j|g})$ is also endogenous. We follow
-\citep{berry1994} to construct additional instruments for
+\citep{berry1994estimating} to construct additional instruments for
 $\log(\bar{s}_{j|g})$, which is the sum of product characteristics of the rival
-firms in the same nest $g$. The estimation results are shown in Table
+firms in the same nest $g$. We exploit the competition posed by rivals with the
+added feature of this `competition' coming from within the same group (i.e.
+size category). The results from demand estimation are presented in Table
 \ref{tab:reg_nested_logit}.
 
 \subsection{Results}
@@ -112,31 +119,53 @@ firms in the same nest $g$. The estimation results are shown in Table
     \label{tab:reg_nested_logit}
 \end{table}
 
-The F-test of the first stage is commonly named weak instrument test. The null
-hypothesis is that the instruments are weak, which is rejected by the test. The
-Sargan-Hansen test is a test of over-identification. The null hypothesis is
-that all instruments are valid, which is rejected by the test, implying that
-some instruments are not suitable.
-
-\paragraph{$\hat{\alpha}$} We see that in both cases, the IV estimation gives a larger estimate of the price coefficient, which indicates that price is positively correlated with the unobserved characteristics. The OLS estimation is upward biased.
-\paragraph{$\hat{\sigma}$} The estimate of $\sigma$ is smaller in IV that in OLS,
-implying that the group share $\log(\bar{s}_{j|g})$ positively correlates with
+\paragraph{$\hat{\alpha}$} Once again, the OLS estimates of $\alpha$ are biased towards zero. The OLS estimation is upward biased.
+\paragraph{$\hat{\sigma}$} The estimate of $\sigma$ is smaller in IV that in OLS, which suggests a lower degree of intra-group substitutability once we have accounted for the endogeneity of prices and within-group shares.
+This implies that the group share $\log(\bar{s}_{j|g})$ positively correlates with
 $\xi_j$. The OLS estimation is also upward biased.
+
+\paragraph{Instrument test}
+% zixuan
+The F-test of the first stage is commonly named weak instrument test. The null
+hypothesis is that the instruments are weak, which is rejected by the test,
+implying that our instruments are not too weak. The Sargan-Hansen test is a
+test of over-identification. The null hypothesis is that all instruments are
+valid, which is rejected by the test, implying that some instruments are not
+suitable.
+% anoosheh
+From the results of the test of overidentifying restrictions, we are able to
+reject the null that \textit{all} instruments are valid. Our instruments also
+appear to be weak as indicated by the conditional likelihood ratio (CLR) test
+for weak IV-robustness (for an over-identified system). We cannot reject the
+joint null of $H_0: \alpha=0, \; \sigma=0$. \\ This could point to a possible
+failure of the exogeneity of the instruments we use.
 
 \section{Question 3}
 \subsection{Utility function}
-We now consider a random coefficient model. The utility function is given by
+Next, we turn to our final specification of a random-coefficients model à la
+\citet{berrylevinsohnpakes1995} where indirect utility is defined as,
 \begin{equation}
     u_{ij}=X_{j}\beta + \alpha p_{j} + \xi_{j}+ \eta_i\text{size}_j+ \epsilon_{ij}=\delta_j+\eta_i\text{size}_j+\epsilon_{ij}
 \end{equation}
 where $eta_i\sim N(0,\sigma^2)$.
+
+The difference here is that the coefficient $\eta_i$ is allowed to vary across
+households $i$. After refactoring the indirect utility, we arrive at the
+following expression, where the last line arises since we have learned that
+$\bar{\eta}$ is zero. So that, even if the $\epsilon_{ij}$'s are still i.i.d.
+TIEV, the composite error is not.
+
+Now, the aggregate market share becomes
+\[
+    s_j = \int \frac{\exp{(\delta_j + \eta_i Size_j)}}{1+\sum_{j^{\prime}}^{J}\exp{(\delta_{j^{\prime}} + \eta_i Size_{j^{\prime}})}}dF(\eta_i).
+\]
 
 \subsection{Estimation}
 
 Unlike before, the relationship between $log(s_j)$ and $\delta_j$ is no longer
 as explicit as before ($\delta_j=\log(s_j)-\log(s_0)$). We need to find a way
 to recover $\delta_j$ from the observed market share $s_j$. We follow the
-method provided by \citep{blp1995}.
+method provided by \citep{berrylevinsohnpakes1995}.
 
 The procedure is the following:
 \begin{enumerate}
@@ -165,8 +194,8 @@ The procedure is the following:
 Note that by creating nests, we create a new endogenous variable
 $\log(\bar{s}_{j|g})$ for which we create new instruments. Similarly, by
 creating a random coefficient term $\eta_i$ on size, we create extra
-endogeneity. (How so?) We follow \citep{houdeghandi2020} to construct extra
-differentiation instrument.
+endogeneity. (How so?) We follow \citet{gandhihoude2019measuring} to construct
+extra differentiation instrument.
 \begin{enumerate}
     \item Quadratic: $\sum_{j' \neq j} (d_{j'j}^k)^2$ where $d_{j'j}^k$ is the distance
           between product $j$ and $j'$ in characteristic $k$.
@@ -184,6 +213,7 @@ We plot the GMM objective function w.r.t. $\sigma$ in Figure
     \caption{GMM objective function w.r.t. $\sigma$}
     \label{fig:iv_local_diff}
 \end{figure}
+The sigma that minimizes the GMM objective function is 2.3.
 The estimation results by regressing $\delta_j$ on $X_j$ and $p_j$ are shown in Table \ref{tab:reg_rand_coef}.
 \begin{table}[h!]\fontsize{10pt}{12pt}\selectfont
     \centering
@@ -192,7 +222,7 @@ The estimation results by regressing $\delta_j$ on $X_j$ and $p_j$ are shown in 
     \label{tab:reg_rand_coef}
 \end{table}
 
-\section{Question 4+5 : Markups, merger simulation}
+\section{Question 4 & 5 : Markups & Merger simulation}
 \subsection{Price setting equation}
 The profit of a multiproduct firm is $$ \Pi_f = \sum_{j\in \mathcal{J}_f} (p_j
     -c_j )s_jM$$ since $s_jM$ represents the sales of the product $j$.
@@ -214,11 +244,16 @@ elasticities. For example, if firm $f$ has two products, the matrix is $$
 Therefore, aggregate the pricing equation for all firms, we have $$ S + \Omega
     \odot O (P-C) = 0 $$ where $O$ is the ownership matrix.
 \subsection{Estimation}
-We take $\hat{\alpha}=-0.0785$. We estimate marginal cost (negative), markup
-and elasticiy for each year. We simulate a merger between firm17 and firm7, by
+We take $\hat{\alpha}=-0.087$. We estimate marginal cost (negative), markup and
+elasticiy for each year. We simulate a merger between firm17 and firm7, by
 modifying the ownership matrix. The mean results are shown in Table
-\ref{tab:post_merger_mean}. Table \ref{tab:markup} shows the results.
-\input{../Results/Tables/post_merger_mean.tex} The anomaly is that we get
+\ref{tab:post_merger_mean}.
+\begin{table}[h!]\fontsize{10pt}{12pt}\selectfont
+    \centering
+    \input{../Results/Tables/post_merger_mean.tex}
+    \caption{Markup}
+    \label{tab:post_merger_mean}
+\end{table} The anomaly is that we get
 negative marginal cost, this is due to the small $\hat{\alpha}$ from the
 estimation. Also, the effect of average price seems to be very insignificant.
 
@@ -229,5 +264,13 @@ $$CS_i=\frac{-\ln(s_0)}{\alpha_i}$$ In total, $$ CS = M\int
     CS_i(\theta)dF(\theta)$$
 
 The result is shown in Table \ref{tab:post_merger_cs}
-\input{../Results/Tables/post_merger_cs.tex}
+\begin{table}[h!]\fontsize{10pt}{12pt}\selectfont
+    \centering
+    \input{../Results/Tables/post_merger_cs.tex}
+    \caption{Consumer surplus}
+    \label{tab:post_merger_cs}
+\end{table}
+
+\pagebreak \newpage
+\bibliography{../References/ref.bib}
 \end{document}
