@@ -16,16 +16,16 @@ dt[, firmids := as.factor(firmids)]
 dt[, name := as.factor(name)]
 dt[, modelid := as.numeric(name)]
 
+# the variables to be included in the regression
+var_exo <- c("dpm", "door3", "door4", "door5", "at", "ps", "air", "drv", "wt", "hp2wt", "hp", "euro", "japan", "size", "wb")
+var_end <- c("p")
+
 # descriptive statistics: the mean and the variation of the variables
 stat <- dt[, lapply(.SD, mean), .SDcols = c(var_exo, var_end)]
 stat <- rbind(stat, dt[, lapply(.SD, sd), .SDcols = c(var_exo, var_end)])
 stat <- t(stat)
 colnames(stat) <- c("mean", "sd")
-print(xtable(stat, type = "latex", label = "tab:desc"), file = "Results/Tables/descriptive.tex")
-?xtable
-# the variables to be included in the regression
-var_exo <- c("dpm", "door3", "door4", "door5", "at", "ps", "air", "drv", "wt", "hp2wt", "hp", "euro", "japan", "size", "wb")
-var_end <- c("p")
+print(xtable(stat, type = "latex"), floating = FALSE, file = "Results/Tables/descriptive.tex")
 
 # we construct a set of instruments following blp1995 (hp2wt, air, dpm, size)
 char_lst <- c("const", var_exo)

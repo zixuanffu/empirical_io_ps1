@@ -62,7 +62,7 @@ dt_postmerger <- price(data = dt_postmerger)
 
 dt_post <- dt_postmerger[, lapply(.SD, mean), by = .(year), .SDcols = c("p", "mc", "mk", "elas", "p_new")]
 
-print(xtable(dt_post, floating = FALSE), type = "latex", file = "Results/Tables/post_merger_mean.tex")
+print(xtable(dt_post), type = "latex", floating = FALSE, file = "Results/Tables/post_merger_mean.tex")
 
 # consumer surplus in monetary terms
 var_x <- c("const", "p_new", var_exo)
@@ -84,4 +84,4 @@ dt_cs[, cs_pre := cs]
 dt_cs[, cs_post := cs_new]
 dt_cs[, diff := cs_new - cs]
 
-print(xtable(dt_cs, floating = FALSE), type = "latex", file = "Results/Tables/post_merger_cs.tex")
+print(xtable(dt_cs), floating = FALSE, type = "latex", file = "Results/Tables/post_merger_cs.tex")
