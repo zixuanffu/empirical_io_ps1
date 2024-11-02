@@ -234,11 +234,11 @@ INPUT ../Results/Tables/nested_logit.tex
 INPUT ../Results/Tables/nested_logit.tex
 INPUT c:/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm
 INPUT c:/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmti12.tfm
-INPUT ../Results/Figures/gmm_obj_iv_local.pdf
-INPUT ../Results/Figures/gmm_obj_iv_local.pdf
-INPUT ../Results/Figures/gmm_obj_iv_local.pdf
-INPUT ../Results/Figures/gmm_obj_iv_local.pdf
-INPUT ../Results/Figures/gmm_obj_iv_local.pdf
+INPUT ../Results/Figures/gmm_obj_iv_instr.pdf
+INPUT ../Results/Figures/gmm_obj_iv_instr.pdf
+INPUT ../Results/Figures/gmm_obj_iv_instr.pdf
+INPUT ../Results/Figures/gmm_obj_iv_instr.pdf
+INPUT ../Results/Figures/gmm_obj_iv_instr.pdf
 INPUT c:/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmmi10.tfm
 INPUT c:/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
 INPUT c:/texlive/2023/texmf-dist/fonts/tfm/public/cm/cmex10.tfm

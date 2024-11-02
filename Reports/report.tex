@@ -176,10 +176,11 @@ Next, we turn to our final specification of a random-coefficients model \`a la
 \end{equation}
 where $\eta_i \sim N(0,\sigma^2)$.
 The difference here is that the coefficient $\eta_i$ is allowed to vary across
-households $i$. After refactoring the indirect utility, we arrive at the
-following expression, where the last line arises since we have learned that
-$\bar{\eta}$ is zero. So that, even if the $\epsilon_{ij}$'s are still i.i.d.
-TIEV across $j$, the composite error is not.
+households $i$.
+% After refactoring the indirect utility, we arrive at the
+% following expression, where the last line arises since we have learned that
+% $\bar{\eta}$ is zero. So that, even if the $\epsilon_{ij}$'s are still i.i.d.
+% TIEV across $j$, the composite error is not.
 
 Now, the aggregate market share becomes
 \[
@@ -228,9 +229,9 @@ extra differentiation instrument.
           between product $j$ and $j'$ in characteristic $k$.
     \item Local: $\sum_{j' \neq j} 1\{d_{j'j}^k < sd^k\}$ where $sd^k$ is the standard
           deviation of $x^k$ acorss all markets.
+    \item Modified local: $\sum_{j' \neq j} 1\{d_{j'j}^k < sd^k\} \times x_{j'}^k$.
 \end{enumerate}
-We select the following instruments in addition to the previous nested logit
-instruments: \verb|size_local, wb_local, hp_local, hp2wt_local|.
+We select the following instruments out of the third category: \verb|size_instr,hp2wt_instr,hp_instr,wb_instr,disp_instr|.
 
 \subsection{Results}
 We plot the GMM objective function w.r.t. $\sigma$ in Figure
@@ -238,12 +239,12 @@ We plot the GMM objective function w.r.t. $\sigma$ in Figure
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{../Results/Figures/gmm_obj_iv_local.pdf}
+    \includegraphics[width=0.8\textwidth]{../Results/Figures/gmm_obj_iv_instr.pdf}
     \caption{GMM objective function w.r.t. $\sigma$}
     \label{fig:iv_local_diff}
 \end{figure}
 
-The sigma that minimizes the GMM objective function is 2.49. Given the
+The sigma that minimizes the GMM objective function is 1.35. Given the
 $\hat{\sigma}$, we recover the mean utility $\delta_j$ for each product in
 every market. The estimation results by regressing $\delta_j$ on $X_j$ and
 $p_j$ are shown in Table \ref{tab:reg_rand_coef}.

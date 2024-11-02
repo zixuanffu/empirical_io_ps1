@@ -1,10 +1,11 @@
 # the main part
 # given delta_j and simulated draws, calculate the market share
 share <- function(delta, mu) {
+    n <- ncol(mu)
     numer <- exp(delta + mu)
     denom <- 1 + colSums(numer) # for each column sum up the rows
     sij <- numer / denom
-    sj <- rowSums(sij) / 200 # for each row sum up the columns
+    sj <- rowSums(sij) / n # for each row sum up the columns
     return(sj)
 }
 
