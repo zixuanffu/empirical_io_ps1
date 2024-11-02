@@ -24,7 +24,7 @@
 
 \title{\textbf{Demand for Differentiated Products} \\
 \vspace{.3cm}
-\large Problem Set 1, \\
+\large Problem Set 1 \\
 Empirical Industrial Organization}
 \author{Zixuan, Anoosheh, Shuo}
 \date{\today}
@@ -226,7 +226,7 @@ extra differentiation instrument.
           deviation of $x^k$ acorss all markets.
 \end{enumerate}
 We select the following instruments in addition to the previous nested logit
-instruments: \verb|size_local, disp_local, wb_local, hp_local, hp2wt_local|.
+instruments: \verb|size_local, wb_local, hp_local, hp2wt_local|.
 
 \subsection{Results}
 We plot the GMM objective function w.r.t. $\sigma$ in Figure
@@ -239,7 +239,7 @@ We plot the GMM objective function w.r.t. $\sigma$ in Figure
     \label{fig:iv_local_diff}
 \end{figure}
 
-The sigma that minimizes the GMM objective function is 2.3. Given the
+The sigma that minimizes the GMM objective function is 2.49. Given the
 $\hat{\sigma}$, we recover the mean utility $\delta_j$ for each product in
 every market. The estimation results by regressing $\delta_j$ on $X_j$ and
 $p_j$ are shown in Table \ref{tab:reg_rand_coef}.
@@ -275,7 +275,7 @@ For example, if firm $f$ has two products, the matrix is $$
     \end{bmatrix}$$
 Therefore, aggregate the pricing equation for all firms, we have $$ S + \Omega
     \odot O (P-C) = 0 $$ where $O$ is the ownership matrix.
-We take $\hat{\alpha} = -0.087$. We estimate marginal cost (negative), markup,
+We take $\hat{\alpha} = -0.098$. We estimate marginal cost (negative), markup,
 and elasticity for each year. We simulate a merger between firm 17 and firm 7
 by modifying the ownership matrix. The mean results are shown in Table
 \ref{tab:post_merger_mean}.

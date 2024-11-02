@@ -24,6 +24,31 @@ blp_contraction <- function(sj, mu, delta_init) {
     return(list(delta, flag_cv, iter))
 }
 
+blp_moment_condition <- function(theta, data, var_iv_new) {
+    delta_new <- c()
+    sigma <- theta
+    # flag_cv_new <- c()
+    # iter_new <- c()
+    for (i in unique(data$year)) {
+        J <- data[year == i, .N]
+        sj <- data[year == i, mktshr]
+        mu <- sigma * outer(data[year == i, size], draw)
+        delta_init <- data[year == i, log(mktshr) - log(shr_0)]
+        contraction_result <- blp_contraction(sj, mu, delta_init)
+        delta_market <- contraction_result[[1]]
+        delta_new <- c(delta_new, delta_market)
+        # flag_cv_new <- c(flag_cv_new, contraction_result[[2]])
+        # iter_new <- c(iter_new, contraction_result[[3]])
+    }
+    data$y <- delta_new
+    iv_formula <- as.formula(paste("y ~", paste(var_exo, collapse = " + "), "|", paste(var_end, collapse = " + "), "~", paste(var_iv_new, collapse = " + ")))
+    residual <- feols(iv_formula, data = data)$residuals
+    var_xz <- c(var_exo, var_iv_new)
+    Z <- as.matrix(data[, ..var_xz])
+    g <- residual * Z
+    return(g)
+}
+
 # gmm estimation (concentrate out beta)
 blp_moment_condition_2 <- function(theta, data, var_iv_new) {
     delta_new <- c()
