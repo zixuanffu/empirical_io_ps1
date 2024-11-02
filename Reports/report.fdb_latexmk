@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex report"] 1730574457.92149 "report.aux" "report.bbl" "report" 1730575368.09804 0
+["bibtex report"] 1730577028.23447 "report.aux" "report.bbl" "report" 1730577081.37521 0
   "../References/ref.bib" 1730569539 1724 eccd4b236acbde8f17701699b7bfdcb2 ""
   "c:/texlive/2023/texmf-dist/bibtex/bst/base/apalike.bst" 1707173968 24635 604dafcc79f521a11ea73e506e1fbd98 ""
-  "report.aux" 1730575366 4572 8a7d73dd687000d477c68c4a4df6b270 "pdflatex"
+  "report.aux" 1730577080 4572 8f74af17b531e9113ddb3e4e40e8e393 "pdflatex"
   (generated)
   "report.bbl"
   "report.blg"
   (rewritten before read)
-["pdflatex"] 1730575364.34882 "c:/Users/nuc/OneDrive/TSE/Cours/S3/Empirical_IO/PS1/Reports/report.tex" "report.pdf" "report" 1730575368.09943 0
+["pdflatex"] 1730577078.58115 "c:/Users/nuc/OneDrive/TSE/Cours/S3/Empirical_IO/PS1/Reports/report.tex" "report.pdf" "report" 1730577081.37604 0
   "../Results/Figures/gmm_obj_iv_local.pdf" 1730571292 4518 dc71391f4d98c3845ef2f082ed078361 ""
   "../Results/Tables/descriptive.tex" 1730571823 588 db1477f50d6e935f46736ef511347e26 ""
   "../Results/Tables/logit.tex" 1730571229 5162 f0baf3204b1afc3e0566bfbdedcf1a2e ""
@@ -15,7 +15,7 @@
   "../Results/Tables/post_merger_cs.tex" 1730575291 593 2388e9e2b999e5aa8059242a9ac6183b ""
   "../Results/Tables/post_merger_mean.tex" 1730575288 485 d02d9815290ac7e0e90e3d9e65505a2f ""
   "../Results/Tables/rand_coef.tex" 1730571319 2448 a6f3f233d3ab0803611196616e9d95af ""
-  "c:/Users/nuc/OneDrive/TSE/Cours/S3/Empirical_IO/PS1/Reports/report.tex" 1730575361 14578 66634c3699a5c861f2304355a6f05083 ""
+  "c:/Users/nuc/OneDrive/TSE/Cours/S3/Empirical_IO/PS1/Reports/report.tex" 1730577076 14692 fcd2182f1cb7aee0a651f627b6305405 ""
   "c:/texlive/2023/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1707174274 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "c:/texlive/2023/texmf-dist/fonts/map/fontname/texfonts.map" 1707175065 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "c:/texlive/2023/texmf-dist/fonts/tfm/jknappen/ec/tcrm1200.tfm" 1707174741 1536 74b7293ec3713bb7fdca8dd1bd1f469c ""
@@ -147,10 +147,10 @@
   "c:/texlive/2023/texmf-var/web2c/pdftex/pdflatex.fmt" 1707178663 8211036 639965a204c0b37abd94803145449440 ""
   "c:/texlive/2023/texmf.cnf" 1707178526 713 e69b156964470283e0530f5060668171 ""
   "newcommand.tex" 1719174980 4404 8a0c7fb22d789b0abbdf79f2272b91e6 ""
-  "report.aux" 1730575366 4572 8a7d73dd687000d477c68c4a4df6b270 "pdflatex"
-  "report.bbl" 1730574458 672 3f857f572e6fe217d9e33dad256486ce "bibtex report"
-  "report.out" 1730575366 1978 830cc2914cba16362e0a8b2e58038a31 "pdflatex"
-  "report.tex" 1730575361 14578 66634c3699a5c861f2304355a6f05083 ""
+  "report.aux" 1730577080 4572 8f74af17b531e9113ddb3e4e40e8e393 "pdflatex"
+  "report.bbl" 1730577029 672 3f857f572e6fe217d9e33dad256486ce "bibtex report"
+  "report.out" 1730577080 1978 830cc2914cba16362e0a8b2e58038a31 "pdflatex"
+  "report.tex" 1730577076 14692 fcd2182f1cb7aee0a651f627b6305405 ""
   (generated)
   "report.aux"
   "report.log"
