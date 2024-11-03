@@ -62,3 +62,15 @@ etable(reg_ols1, reg_ols2, reg_iv1, reg_iv2,
     fitstat = ~ n + ar2 + ivwald1 + ivwald1.p + sargan + sargan.p,
     file = "Results/Tables/logit.tex", tex = TRUE, replace = TRUE
 )
+
+# collinearity check
+collinearity(reg_ols2)
+a <- fixef(reg_ols2)
+str(a) # 19 fixed effects
+b <- unique(dt[, firmids]) # 19 firmids
+# with lm
+f <- as.formula("log(mktshr) - log(shr_0) ~ dpm + door3 + door4 + door5 + at +
+    ps + air + drv + wt + hp2wt + hp + euro + japan + size +
+    wb + p + firmids")
+reg <- lm(f, data = dt)
+summary(reg) # two firm fixed effects are dropped

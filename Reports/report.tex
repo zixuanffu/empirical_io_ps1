@@ -96,7 +96,8 @@ $p$: \verb|const_*, dpm_*, hp2wt_*, size_*, air_*|. The IV estimation results
 are shown in Table \ref{tab:reg_logit}.
 
 \subsection{Results}
-
+We present the results from estimating equation \ref{eq:logit} using OLS and
+IV, with and without brand fixed effect.
 \begin{table}[h!]
     \fontsize{8pt}{10pt}\selectfont
     \centering
@@ -109,7 +110,14 @@ We observe that the coefficient on price, $\alpha$, is larger (in absolute
 terms) but noisily estimated using IV compared to OLS. This makes sense as the
 simple OLS regression yields downward-biased estimates (in terms of magnitude)
 because failing to account for endogeneity underestimates the effect of price
-on market share.
+on market share. \\ Besides, When adding brand fixed effect, the magnitude of
+price coefficient is increased. It implies that when we do not control the
+brand fixed effect (brand fixed effect enters the unobserved product
+characteristics $\xi_j$), the positive correlation between the $p_j$ and
+$\xi_j$ will bias the price coefficient estimates downwards (in terms of
+magnitude). This is further evidence on the price endogeneity issue. Note that
+\verb|euro, japan| are dropped in the estimation due to multicollinearity with
+brand fixed effect.
 
 \section{Nested Logit Model}
 \subsection{Utility function}
@@ -133,8 +141,8 @@ In addition to $p$, $\log(\bar{s}_{j|g})$ is also endogenous. We follow
 \citet{berry1994estimating} to construct additional instruments for
 $\log(\bar{s}_{j|g})$, which is the sum of product characteristics of the rival
 firms in the same nest $g$. We exploit the competition posed by rivals with the
-added feature of this `competition' coming from within the same group (i.e.
-size category). The results from demand estimation are presented in Table
+added feature of this \textbf{competition} coming from within the same group
+(i.e. size category). The results from demand estimation are presented in Table
 \ref{tab:reg_nested_logit}.
 
 \subsection{Results}
@@ -160,15 +168,15 @@ instruments are not too weak. The Sargan-Hansen test is a test of
 over-identification. The null hypothesis is that all instruments are valid,
 which is rejected by the test, implying that some instruments are not suitable.
 
-%Anoosheh:
-\input{../Results/Tables/nested_logit_anoosheh.tex}
-According to the results here \ref{nl}, we seem to draw different conclusions.
-From the results of the test of overidentifying restrictions, we are able to
-reject the null that \textit{all} instruments are valid. Our instruments also
-appear to be weak as indicated by the conditional likelihood ratio (CLR) test
-for weak IV-robustness (for an over-identified system). We cannot reject the
-joint null of $H_0: \alpha=0, \; \sigma=0$. \\ This could point to a possible
-failure of the exogeneity of the instruments we use.
+% Anoosheh:
+% \input{../Results/Tables/nested_logit_anoosheh.tex}
+% According to the results here \ref{nl}, we seem to draw different conclusions.
+% From the results of the test of overidentifying restrictions, we are able to
+% reject the null that \textit{all} instruments are valid. Our instruments also
+% appear to be weak as indicated by the conditional likelihood ratio (CLR) test
+% for weak IV-robustness (for an over-identified system). We cannot reject the
+% joint null of $H_0: \alpha=0, \; \sigma=0$. \\ This could point to a possible
+% failure of the exogeneity of the instruments we use.
 
 \section{Random Coefficients Model}
 \subsection{Utility function}
@@ -225,8 +233,9 @@ The procedure is the following:
 Note that by creating nests, we create a new endogenous variable
 $\log(\bar{s}_{j|g})$ for which we create new instruments. Similarly, by
 creating a random coefficient term $\eta_i$ on size, we create extra
-endogeneity. (How so?) We follow \citet{gandhihoude2019measuring} to construct
-extra differentiation instrument.
+endogeneity. \footnote{This is only an intuition. The actual source of
+    endogeneity is to further investigated.} We follow
+\citet{gandhihoude2019measuring} to construct extra differentiation instrument.
 \begin{enumerate}
     \item Quadratic: $\sum_{j' \neq j} (d_{j'j}^k)^2$ where $d_{j'j}^k$ is the distance
           between product $j$ and $j'$ in characteristic $k$.
@@ -288,6 +297,7 @@ For example, if firm $f$ has two products, the matrix is $$
     \end{bmatrix}$$
 Therefore, aggregate the pricing equation for all firms, we have $$ S + \Omega
     \odot O (P-C) = 0 $$ where $O$ is the ownership matrix.
+\subsection{Estimation}
 We take $\hat{\alpha} = -0.073$. We estimate marginal cost (negative), markup,
 and elasticity for each year. We simulate a merger between firm 17 and firm 7
 by modifying the ownership matrix. The mean results are shown in Table
@@ -302,10 +312,7 @@ by modifying the ownership matrix. The mean results are shown in Table
 \end{table}
 The anomaly is that we get
 negative marginal cost, this is due to the small $\hat{\alpha}$ from the
-estimation. Also, the effect of average price seems to be very insignificant.
-
-\subsection{Estimation}
-We calculate consumer surplus pre- and post-merger in monetary terms:
+estimation. Also, the effect on average price seems to be very small. Now we turn to the calculation of consumer surplus pre- and post-merger in monetary terms:
 \begin{equation*}
     CS_i = E(\max_j u_{ij}) = \frac{\ln(1 + \sum_j \exp(\delta_j + \mu_{ij}))}{\alpha_i}
 \end{equation*}
@@ -314,7 +321,8 @@ Thus in total:
     CS = M \int CS_i(\theta) dF(\theta)
 \end{equation*}
 
-The result is shown in Table \ref{tab:post_merger_cs}.
+The result is shown in Table \ref{tab:post_merger_cs}. Total consumer surplus
+is (drastically?) decreased following the merge.
 \begin{table}[h!]
     \fontsize{10pt}{12pt}\selectfont
     \centering
